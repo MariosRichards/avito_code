@@ -1,9 +1,13 @@
 # python check_zip_md5.py <directory containing zips>
 import os,sys, hashlib
 
+# WARNING: Produced on windows system - please scream at me if I've inadvertently done something platform specific here.
 
 # (probably) correct md5 hashes grabbed from here:
 # https://www.kaggle.com/c/avito-duplicate-ads-detection/forums/t/20877/file-checksums
+# acknowledgements to:
+# FernandoProcy
+# David Tran
 hash_dict = {"489dab78a6afada8654ac0947eeffc64": "Images_0.zip",
     "3b874896ed26021a8585170b1f1dd0d4": "Images_1.zip",
     "5677fdd58dd0c75bec1a2618f9ddd16f": "Images_2.zip",
@@ -22,16 +26,18 @@ hash_dict = {"489dab78a6afada8654ac0947eeffc64": "Images_0.zip",
 if len(sys.argv) < 2:
     raise ValueError("Missing argument: expected call format - python check_zip_md5.py <directory containing zips>")
 
+# Assuming here that all zips you want checked are in one directory, supplied via the command-line
 zip_directory = sys.argv[1]
-    
+   
+# Unnecessary codewise - but I didn't want to fiddle too much with the text I copy-pasted from the forum
 hash_dict_inv = {v: k for k, v in hash_dict.items()}
 
 for item in os.listdir(zip_directory):
     thing = os.path.join(zip_directory, item)
     if os.path.isfile(thing):
-        filename = thing.split("\\")[-1]
+        filename = thing.split(os.path.sep)[-1]
         extension = filename.split(".")[-1]
-        if extension == 'zip' and filename in hash_dict_inv.keys(): # only for zip files
+        if ( extension == 'zip' ) and ( filename in hash_dict_inv.keys() ): # only for zip files
  
             md5 = hashlib.md5()
             with open(thing,'rb') as f: 
